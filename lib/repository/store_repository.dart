@@ -80,6 +80,6 @@ class StoreRepository {
       return e?.remainStat == 'plenty' ||
         e?.remainStat == 'some' ||
         e?.remainStat == 'few';
-    }).toList();
+    }).toList()..sort((a, b) => a.km!.compareTo(b.km ?? 0.0));
   }
 }
