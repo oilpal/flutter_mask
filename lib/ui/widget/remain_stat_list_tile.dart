@@ -14,7 +14,12 @@ class RemainStatListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(store?.name ?? 'No title'),
-      subtitle: Text(store?.addr ?? 'No Address'),
+      subtitle: Column(
+        children: <Widget>[
+          Text(store?.addr ?? 'No Address'),
+          Text('${store?.km}km')
+        ],
+      ),
       trailing: _buildRemainStatWidget(store),
       onTap: () {
         print('tap');

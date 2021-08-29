@@ -8,6 +8,7 @@ class Store {
   String? stockAt;
   String? remainStat;
   String? createdAt;
+  num? km;
 
   Store(
       {this.code,
@@ -18,7 +19,8 @@ class Store {
         this.lng,
         this.stockAt,
         this.remainStat,
-        this.createdAt});
+        this.createdAt,
+      this.km});
 
   Store.fromJson(Map<String, dynamic> json) {
     code = json['code'];

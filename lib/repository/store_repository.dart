@@ -1,8 +1,34 @@
+import 'dart:math';
+
 import 'package:flutter_mask/model/store.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class StoreRepository {
+
+  String calcDistance(
+      double lat1, double lon1, double lat2, double lon2, String unit) {
+    double theta = lon1 - lon2;
+    double dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) +
+        cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta));
+    dist = acos(dist);
+    dist = rad2deg(dist);
+    dist = dist * 60 * 1.1515;
+    if (unit == 'K') {
+      dist = dist * 1.609344;
+    } else if (unit == 'N') {
+      dist = dist * 0.8684;
+    }
+    return dist.toStringAsFixed(2);
+  }
+
+  double deg2rad(double deg) {
+    return (deg * pi / 180.0);
+  }
+
+  double rad2deg(double rad) {
+    return (rad * 180.0 / pi);
+  }
 
   Future<List<Store>> fetch(double latitude, double longitude) async {
 
@@ -35,7 +61,15 @@ class StoreRepository {
     // setState(() {
     //   stores.clear();
       jsonStores.forEach((e) {
-        stores.add(Store.fromJson(e));
+        final store = Store.fromJson(e);
+        final String km = calcDistance(store.lat as double, store.lng as double,
+            latitude as double, longitude as double, 'K');
+        // _distance.as(LengthUnit.Kilometer,
+        //     LatLng(store.lat as double, store.lng as double),
+        //     LatLng(latitude as double, longitude as double));
+
+        store.km = num.parse(km);
+        stores.add(store);
       });
       // isLoading = false;
     // });
