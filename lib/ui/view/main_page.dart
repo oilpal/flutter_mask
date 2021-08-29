@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mask/model/store.dart';
 import 'package:flutter_mask/ui/widget/remain_stat_list_tile.dart';
 import 'package:flutter_mask/viewmodel/store_model.dart';
 import 'package:provider/provider.dart';
