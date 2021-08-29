@@ -15,6 +15,7 @@ class RemainStatListTile extends StatelessWidget {
     return ListTile(
       title: Text(store?.name ?? 'No title'),
       subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(store?.addr ?? 'No Address'),
           Text('${store?.km}km')
