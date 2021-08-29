@@ -42,6 +42,10 @@ class StoreRepository {
 
     print('fetch 완료');
 
-    return stores;
+    return stores.where((e)  {
+      return e?.remainStat == 'plenty' ||
+        e?.remainStat == 'some' ||
+        e?.remainStat == 'few';
+    }).toList();
   }
 }
