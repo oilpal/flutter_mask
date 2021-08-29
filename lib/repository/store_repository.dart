@@ -47,19 +47,27 @@ class StoreRepository {
 
     var url = Uri.parse('https://gist.githubusercontent.com/junsuk5/bb7485d5f70974deee920b8f0cd1e2f0/raw/063f64d9b343120c2cb01a6555cf9b38761b1d94/sample.json');
 
-    var response = await http.get(url);
-    print('Response status: ${response.statusCode}');
-    // print('Response data: ${response.body}');
-    // print('Response data: ${utf8.decode(response.bodyBytes)}');
-    // print('Response data: ${jsonDecode(utf8.decode(response.bodyBytes))}');
+    var response = await http.get(url).timeout(
+      // 5초 타임아웃.
+      Duration(seconds: 5),
+      onTimeout: () {
+        return http.Response('Error', 500);
+      }
+    );
 
-    final jsonResult = jsonDecode(utf8.decode(response.bodyBytes));
-    // print(jsonResult['stores']);
+    if(response.statusCode == 200) {
+      print('Response status: ${response.statusCode}');
+      // print('Response data: ${response.body}');
+      // print('Response data: ${utf8.decode(response.bodyBytes)}');
+      // print('Response data: ${jsonDecode(utf8.decode(response.bodyBytes))}');
 
-    final jsonStores = jsonResult['stores'];
+      final jsonResult = jsonDecode(utf8.decode(response.bodyBytes));
+      // print(jsonResult['stores']);
 
-    // setState(() {
-    //   stores.clear();
+      final jsonStores = jsonResult['stores'];
+
+      // setState(() {
+      //   stores.clear();
       jsonStores.forEach((e) {
         final store = Store.fromJson(e);
         final String km = calcDistance(store.lat as double, store.lng as double,
@@ -72,14 +80,19 @@ class StoreRepository {
         stores.add(store);
       });
       // isLoading = false;
-    // });
+      // });
 
-    print('fetch 완료');
+      print('fetch 완료');
 
-    return stores.where((e)  {
-      return e?.remainStat == 'plenty' ||
-        e?.remainStat == 'some' ||
-        e?.remainStat == 'few';
-    }).toList()..sort((a, b) => a.km!.compareTo(b.km ?? 0.0));
+      return stores.where((e) {
+        return e?.remainStat == 'plenty' ||
+            e?.remainStat == 'some' ||
+            e?.remainStat == 'few';
+      }).toList()
+        ..sort((a, b) => a.km!.compareTo(b.km ?? 0.0));
+    }
+    else {
+      return [];
+    }
   }
 }
