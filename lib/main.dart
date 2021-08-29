@@ -40,8 +40,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Store> stores = List.generate(0, (index) => Store());
+  var isLoading = true;
 
   Future fetch() async {
+
+    setState(() {
+      isLoading = true;
+    });
+
     // var url = Uri.parse('https://example.com/whatsit/create');
     // var response = await http.post(url, body: {'name': 'doodle', 'color': 'blue'});
     // print('Response status: ${response.statusCode}');
@@ -62,25 +68,52 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final jsonStores = jsonResult['stores'];
 
-    stores.clear();
-    jsonStores.forEach((e) {
-      stores.add(Store.fromJson(e));
+    setState(() {
+      stores.clear();
+      jsonStores.forEach((e) {
+        stores.add(Store.fromJson(e));
+      });
+      isLoading = false;
     });
 
+    print('fetch 완료');
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetch();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('마스크 재고 있는 곳 : 0'),),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            await fetch();
-            print(stores.length);
-          },
-          child: const Text('http get'),
+      appBar: AppBar(title: Text('마스크 재고 있는 곳 : ${stores.length}'),
+        actions: <Widget>[
+          IconButton(onPressed: fetch, icon: Icon(Icons.refresh))
+        ],
+      ),
+      body: isLoading ? loadingWidget() :
+        ListView(
+          children: stores.map((e) {
+            return ListTile(title: Text(e?.name ?? 'No title곳'),
+              subtitle: Text(e?.addr ?? 'No address'),
+              trailing: Text(e?.remainStat ?? '매진'),
+              );
+          }).toList(),
         ),
+    );
+  }
+
+  Widget loadingWidget () {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text('정보를 가져오는 중'),
+          CircularProgressIndicator(),
+        ],
       ),
     );
   }
