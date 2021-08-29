@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mask/model/store.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
@@ -38,6 +39,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final List<Store> stores = List.generate(0, (index) => Store());
 
   Future fetch() async {
     // var url = Uri.parse('https://example.com/whatsit/create');
@@ -53,18 +55,29 @@ class _MyHomePageState extends State<MyHomePage> {
     print('Response status: ${response.statusCode}');
     // print('Response data: ${response.body}');
     // print('Response data: ${utf8.decode(response.bodyBytes)}');
-    print('Response data: ${jsonDecode(utf8.decode(response.bodyBytes))}');
+    // print('Response data: ${jsonDecode(utf8.decode(response.bodyBytes))}');
+    
+    final jsonResult = jsonDecode(utf8.decode(response.bodyBytes));
+    // print(jsonResult['stores']);
+
+    final jsonStores = jsonResult['stores'];
+
+    stores.clear();
+    jsonStores.forEach((e) {
+      stores.add(Store.fromJson(e));
+    });
 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('title'),),
+      appBar: AppBar(title: Text('마스크 재고 있는 곳 : 0'),),
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
-            fetch();
+          onPressed: () async {
+            await fetch();
+            print(stores.length);
           },
           child: const Text('http get'),
         ),
