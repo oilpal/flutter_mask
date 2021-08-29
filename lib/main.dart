@@ -96,12 +96,16 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: isLoading ? loadingWidget() :
         ListView(
-          children: stores.map((e) {
-            return ListTile(title: Text(e?.name ?? 'No title곳'),
-              subtitle: Text(e?.addr ?? 'No address'),
-              trailing: _buildRemainStatWidget(e),
-              );
-          }).toList(),
+          children: stores
+              .where((e) => e?.remainStat == 'plenty' ||
+                            e?.remainStat == 'some' ||
+                            e?.remainStat == 'few')
+              .map((e) {
+                return ListTile(title: Text(e?.name ?? 'No title곳'),
+                  subtitle: Text(e?.addr ?? 'No address'),
+                  trailing: _buildRemainStatWidget(e),
+                  );
+              }).toList(),
         ),
     );
   }
