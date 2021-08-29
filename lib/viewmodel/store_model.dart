@@ -1,22 +1,26 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_mask/model/store.dart';
+import 'package:flutter_mask/repository/location_repository.dart';
 import 'package:flutter_mask/repository/store_repository.dart';
+import 'package:geolocator/geolocator.dart';
 
 class StoreModel with ChangeNotifier {
   var isLoading = false;
   List<Store> stores = [];
   final _storeRepository = StoreRepository();
+  final _locationRepository = LocationRepository();
 
   StoreModel() {
-    fetch();
+    fetch(0.0, 0.0);
   }
 
-  Future fetch() async {
+  Future fetch(double lat, double lng) async {
     isLoading = true;
     notifyListeners();
 
-    stores = await _storeRepository.fetch();
+    Position position = await _locationRepository.getCurrentLocation();
+    stores = await _storeRepository.fetch(position.latitude, position.longitude);
 
     isLoading = false;
     notifyListeners();

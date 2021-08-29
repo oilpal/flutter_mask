@@ -4,7 +4,7 @@ import 'dart:convert';
 
 class StoreRepository {
 
-  Future<List<Store>> fetch() async {
+  Future<List<Store>> fetch(double latitude, double longitude) async {
 
     final stores = List.generate(0, (index) => Store());
 

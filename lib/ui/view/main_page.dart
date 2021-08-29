@@ -12,7 +12,7 @@ class MainPage extends StatelessWidget {
       appBar: AppBar(title: Text('마스크 재고 있는 곳 : ${storeModel.stores.length}'),
         actions: <Widget>[
           IconButton(onPressed: () {
-            storeModel.fetch();
+            storeModel.fetch(0.0, 0.0);
           }, icon: Icon(Icons.refresh))
         ],
       ),
@@ -21,10 +21,7 @@ class MainPage extends StatelessWidget {
       : ListView(
         children: storeModel.stores
             .map((e) {
-          return ListTile(title: Text(e?.name ?? 'No title곳'),
-            subtitle: Text(e?.addr ?? 'No address'),
-            trailing: RemainStatListTile(e),
-          );
+          return RemainStatListTile(e);
         }).toList(),
       ),
     );

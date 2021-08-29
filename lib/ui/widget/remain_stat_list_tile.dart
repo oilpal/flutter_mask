@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mask/model/store.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RemainStatListTile extends StatelessWidget {
   // const RemainStatListTile({Key? key}) : super(key: key);
@@ -11,7 +12,15 @@ class RemainStatListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildRemainStatWidget(store);
+    return ListTile(
+      title: Text(store?.name ?? 'No title'),
+      subtitle: Text(store?.addr ?? 'No Address'),
+      trailing: _buildRemainStatWidget(store),
+      onTap: () {
+        print('tap');
+        _launchURL(store?.lat as double, store?.lng as double);
+      },
+    );
   }
 
   Widget _buildRemainStatWidget(Store? store) {
@@ -29,7 +38,7 @@ class RemainStatListTile extends StatelessWidget {
       color = Colors.green;
     }
 
-    switch(store?.remainStat) {
+    switch (store?.remainStat) {
       case 'plenty':
         remainStat = '충분';
         description = '100개 이상';
@@ -56,10 +65,18 @@ class RemainStatListTile extends StatelessWidget {
 
     return Column(
       children: <Widget>[
-        Text(remainStat, style: TextStyle(color: color, fontWeight: FontWeight.bold)
+        Text(remainStat,
+            style: TextStyle(color: color, fontWeight: FontWeight.bold)
         ),
         Text(description, style: TextStyle(color: color))
       ],
     );
+  }
+
+  _launchURL(double lat, double lng) async {
+    var _url = 'https://google.com/maps/search/?api=1&query=';
+    _url += '$lat,';
+    _url += '$lng';
+    await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';
   }
 }
